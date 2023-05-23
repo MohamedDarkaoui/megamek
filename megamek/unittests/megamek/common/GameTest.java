@@ -59,4 +59,23 @@ public class GameTest {
 
         Assert.assertEquals(winnerID, 1);
     }
+
+    @Test
+    public void testVictoryTeam(){
+        IPlayer testPlayer1 = new Player(1, "tester1");
+        IPlayer testPlayer2 = new Player(2, "tester2");
+
+        testPlayer1.setTeam(4);
+        testPlayer2.setTeam(3);
+
+        IGame testGame = new Game();
+
+        testGame.addPlayer(1,testPlayer1);
+        testGame.addPlayer(2, testPlayer2);
+
+        testGame.setVictoryTeam(3);
+        int winnerTeamID = testGame.getVictoryTeam();
+
+        Assert.assertEquals(winnerTeamID, 3);
+    }
 }
