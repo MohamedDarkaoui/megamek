@@ -13,7 +13,6 @@ import java.io.IOException;
 
 @RunWith(JUnit4.class)
 public class ServerTest {
-
     @Test
     public void testGetPlayer() throws IOException {
         Server server = new Server("password", 483);
@@ -23,4 +22,5 @@ public class ServerTest {
         server.setGame(game);
         Assert.assertEquals(server.getPlayer(1), player1);
     }
+
 }
