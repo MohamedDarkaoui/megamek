@@ -13,15 +13,15 @@ public class PlayerTest {
 
     @Test
     public void testPlayerInitialization(){
-        IPlayer testPlayer = new Player(501, "tester");
-        Assert.assertEquals(testPlayer.getName(),"tester" );
-        Assert.assertEquals(testPlayer.getId(), 501);
+        IPlayer Player = new Player(501, "tester");
+        Assert.assertEquals(Player.getName(),"tester" );
+        Assert.assertEquals(Player.getId(), 501);
     }
 
     @Test
-    public void testPlayerUpdate(){
-        IPlayer testPlayer = new Player(501, "tester");
-        testPlayer.setName("admin");
-        Assert.assertEquals(testPlayer.getName(), "admin");
+    public void PlayerUpdate(){
+        IPlayer Player = new Player(501, "tester");
+        Player.setName("admin");
+        Assert.assertEquals(Player.getName(), "admin");
     }
 }

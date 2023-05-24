@@ -15,66 +15,66 @@ public class GameTest {
 
     @Test
     public void testAddPlayer(){
-        IPlayer testPlayer1 = new Player(1, "tester1");
-        IPlayer testPlayer2 = new Player(2, "tester2");
-        IPlayer testPlayer3 = new Player(2, "tester3");
+        IPlayer Player1 = new Player(1, "tester1");
+        IPlayer Player2 = new Player(2, "tester2");
+        IPlayer Player3 = new Player(2, "tester3");
 
-        testPlayer1.setTeam(5);
-        testPlayer2.setTeam(4);
-        testPlayer3.setTeam(4);
+        Player1.setTeam(5);
+        Player2.setTeam(4);
+        Player3.setTeam(4);
 
-        IGame testGame = new Game();
+        IGame game = new Game();
 
-        testGame.addPlayer(1, testPlayer1);
-        testGame.addPlayer(2, testPlayer2);
-        testGame.addPlayer(3, testPlayer3);
+        game.addPlayer(1, Player1);
+        game.addPlayer(2, Player2);
+        game.addPlayer(3, Player3);
 
-        Assert.assertEquals(testGame.getPlayer(1), testPlayer1);
-        Assert.assertEquals(testGame.getPlayer(2), testPlayer2);
-        Assert.assertEquals(testGame.getPlayer(3), testPlayer3);
+        Assert.assertEquals(game.getPlayer(1), Player1);
+        Assert.assertEquals(game.getPlayer(2), Player2);
+        Assert.assertEquals(game.getPlayer(3), Player3);
 
-        List<Team> teams = testGame.getTeamsVector();
+        List<Team> teams = game.getTeamsVector();
 
         Assert.assertEquals(teams.size(), 2);
-        Assert.assertEquals(testGame.getTeamForPlayer(testPlayer1).getId(), 5);
-        Assert.assertEquals(testGame.getTeamForPlayer(testPlayer2).getId(), 4);
-        Assert.assertEquals(testGame.getTeamForPlayer(testPlayer2).getId(), 4);
+        Assert.assertEquals(game.getTeamForPlayer(Player1).getId(), 5);
+        Assert.assertEquals(game.getTeamForPlayer(Player2).getId(), 4);
+        Assert.assertEquals(game.getTeamForPlayer(Player2).getId(), 4);
     }
 
     @Test
     public void testVictoryPlayer(){
-        IPlayer testPlayer1 = new Player(1, "tester1");
-        IPlayer testPlayer2 = new Player(2, "tester2");
+        IPlayer Player1 = new Player(1, "tester1");
+        IPlayer Player2 = new Player(2, "tester2");
 
-        testPlayer1.setTeam(4);
-        testPlayer2.setTeam(3);
+        Player1.setTeam(4);
+        Player2.setTeam(3);
 
-        IGame testGame = new Game();
+        IGame game = new Game();
 
-        testGame.addPlayer(1,testPlayer1);
-        testGame.addPlayer(2, testPlayer2);
+        game.addPlayer(1,Player1);
+        game.addPlayer(2, Player2);
 
-        testGame.setVictoryPlayerId(1);
-        int winnerID = testGame.getVictoryPlayerId();
+        game.setVictoryPlayerId(1);
+        int winnerID = game.getVictoryPlayerId();
 
         Assert.assertEquals(winnerID, 1);
     }
 
     @Test
     public void testVictoryTeam(){
-        IPlayer testPlayer1 = new Player(1, "tester1");
-        IPlayer testPlayer2 = new Player(2, "tester2");
+        IPlayer Player1 = new Player(1, "tester1");
+        IPlayer Player2 = new Player(2, "tester2");
 
-        testPlayer1.setTeam(4);
-        testPlayer2.setTeam(3);
+        Player1.setTeam(4);
+        Player2.setTeam(3);
 
-        IGame testGame = new Game();
+        IGame game = new Game();
 
-        testGame.addPlayer(1,testPlayer1);
-        testGame.addPlayer(2, testPlayer2);
+        game.addPlayer(1,Player1);
+        game.addPlayer(2, Player2);
 
-        testGame.setVictoryTeam(3);
-        int winnerTeamID = testGame.getVictoryTeam();
+        game.setVictoryTeam(3);
+        int winnerTeamID = game.getVictoryTeam();
 
         Assert.assertEquals(winnerTeamID, 3);
     }
