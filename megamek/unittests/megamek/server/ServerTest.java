@@ -23,4 +23,38 @@ public class ServerTest {
         Assert.assertEquals(server.getPlayer(1), player1);
     }
 
+    @Test
+    public void testForceVictoryNoTeam() throws IOException {
+        IPlayer victor = new Player(5, "Victor");
+        Game game = new Game();
+        Server server = new Server("password", 386);
+
+        game.addPlayer(victor.getId(), victor);
+
+        server.setGame(game);
+
+        int victorID = server.getGame().getVictoryPlayerId();
+        Assert.assertNotEquals(victorID, victor.getId());
+
+        server.forceVictory(victor);
+
+        victorID = server.getGame().getVictoryPlayerId();
+        Assert.assertEquals(victorID, victor.getId());
+    }
+
+    @Test
+    public void testForceVictoryWithTeam() throws IOException {
+        IPlayer victor = new Player(5, "Victor");
+        Game game = new Game();
+        Server server = new Server("password", 322);
+
+        victor.setTeam(2);
+
+        server.setGame(game);
+
+        server.forceVictory(victor);
+
+        Assert.assertNotEquals(server.getGame().getVictoryPlayerId(), victor.getId());
+        Assert.assertEquals(server.getGame().getVictoryTeam(), victor.getTeam());
+    }
 }
