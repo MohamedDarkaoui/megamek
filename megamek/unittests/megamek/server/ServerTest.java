@@ -15,7 +15,7 @@ import java.io.IOException;
 public class ServerTest {
 
     @Test
-    public void getPlayerTest() throws IOException {
+    public void testGetPlayer() throws IOException {
         Server server = new Server("password", 483);
         IGame game = new Game();
         IPlayer player1 = new Player(1, "tester1");
