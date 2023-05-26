@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import megamek.common.IGame;
-import megamek.common.Report;
 import megamek.common.options.GameOptions;
 import megamek.common.options.OptionsConstants;
 
@@ -100,7 +99,7 @@ public class Victory implements Serializable {
 
         combineScores(game, context, vr);
         double highScore = findHighScoreAndDivide(vr);
-        vr.setVictory(highScore >= neededVictoryConditions);
+        vr.setVictory(!(highScore < neededVictoryConditions) && vr.victory());
 
         if (vr.victory()) {
             return vr;
@@ -112,13 +111,11 @@ public class Victory implements Serializable {
     }
 
     private void combineScores(IGame game, Map<String, Object> context, VictoryResult vr) {
-        boolean victory = false;
-
         for (IVictoryConditions v : VCs) {
             VictoryResult res = v.victory(game, context);
             vr.addReports(res.getReports());
             if (res.victory()) {
-                victory = true;
+                vr.setVictory(true);
             }
             updateScores(res, vr);
         }
@@ -134,23 +131,24 @@ public class Victory implements Serializable {
     }
 
     private double findHighScoreAndDivide(VictoryResult vr) {
-        double highScore = 0.0;
-
-        for (int pl : vr.getPlayers()) {
-            double sc = vr.getPlayerScore(pl);
-            vr.addPlayerScore(pl, sc / VCs.length);
-            if (sc > highScore) {
-                highScore = sc;
-            }
-        }
-        for (int t : vr.getTeams()) {
-            double sc = vr.getTeamScore(t);
-            vr.addTeamScore(t, sc / VCs.length);
-            if (sc > highScore) {
-                highScore = sc;
-            }
-        }
+        double highScore =  computeHighScoreAndDivide(vr.getPlayers(), vr, true);
+        highScore = Math.max(highScore, computeHighScoreAndDivide(vr.getTeams(), vr, false));
 
         return highScore;
     }
+
+    private double computeHighScoreAndDivide(int[] ids, VictoryResult vr, boolean isPlayer) {
+        double highScore = 0.0;
+        for (int id : ids) {
+            double score = isPlayer ? vr.getPlayerScore(id) : vr.getTeamScore(id);
+            if (isPlayer) {
+                vr.addPlayerScore(id, score / VCs.length);
+            } else {
+                vr.addTeamScore(id, score / VCs.length);
+            }
+            highScore = Math.max(highScore, score);
+        }
+        return highScore;
+    }
+
 }
