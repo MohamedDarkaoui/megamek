@@ -96,28 +96,46 @@ public class Victory implements Serializable {
     }
 
     private VictoryResult checkOptionalVictory(IGame game, Map<String, Object> context) {
-        boolean victory = false;
         VictoryResult vr = new VictoryResult(true);
 
-        // combine scores
+        combineScores(game, context, vr);
+        double highScore = findHighScoreAndDivide(vr);
+        vr.setVictory(highScore >= neededVictoryConditions);
+
+        if (vr.victory()) {
+            return vr;
+        } else if (game.gameTimerIsExpired()) {
+            return VictoryResult.drawResult();
+        }
+
+        return vr;
+    }
+
+    private void combineScores(IGame game, Map<String, Object> context, VictoryResult vr) {
+        boolean victory = false;
+
         for (IVictoryConditions v : VCs) {
             VictoryResult res = v.victory(game, context);
-            for (Report r : res.getReports()) {
-                vr.addReport(r);
-            }
+            vr.addReports(res.getReports());
             if (res.victory()) {
                 victory = true;
             }
-            for (int pl : res.getPlayers()) {
-                vr.addPlayerScore(pl, vr.getPlayerScore(pl) + res.getPlayerScore(pl));
-            }
-            for (int t : res.getTeams()) {
-                vr.addTeamScore(t, vr.getTeamScore(t) + res.getTeamScore(t));
-            }
+            updateScores(res, vr);
         }
-        // find highscore for thresholding, also divide the score
-        // to an average
+    }
+
+    private void updateScores(VictoryResult res, VictoryResult vr) {
+        for (int pl : res.getPlayers()) {
+            vr.addPlayerScore(pl, vr.getPlayerScore(pl) + res.getPlayerScore(pl));
+        }
+        for (int t : res.getTeams()) {
+            vr.addTeamScore(t, vr.getTeamScore(t) + res.getTeamScore(t));
+        }
+    }
+
+    private double findHighScoreAndDivide(VictoryResult vr) {
         double highScore = 0.0;
+
         for (int pl : vr.getPlayers()) {
             double sc = vr.getPlayerScore(pl);
             vr.addPlayerScore(pl, sc / VCs.length);
@@ -125,26 +143,14 @@ public class Victory implements Serializable {
                 highScore = sc;
             }
         }
-        for (int pl : vr.getTeams()) {
-            double sc = vr.getTeamScore(pl);
-            vr.addTeamScore(pl, sc / VCs.length);
+        for (int t : vr.getTeams()) {
+            double sc = vr.getTeamScore(t);
+            vr.addTeamScore(t, sc / VCs.length);
             if (sc > highScore) {
                 highScore = sc;
             }
         }
-        if (highScore < neededVictoryConditions) {
-            victory = false;
-        }
-        vr.setVictory(victory);
 
-        if (vr.victory()) {
-            return vr;
-        }
-
-        if (!vr.victory() && game.gameTimerIsExpired()) {
-            return VictoryResult.drawResult();
-        }
-
-        return vr;
+        return highScore;
     }
 }
