@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import megamek.common.IPlayer;
 import megamek.common.Report;
@@ -160,6 +161,16 @@ public class VictoryResult implements IResult {
 
     public void addReport(Report r) {
         reports.add(r);
+    }
+
+    /**
+     * Adds all reports from a provided list of reports to the internal list of reports
+     * @param reports The list of reports to be added.
+     */
+    public void addReports(List<Report> reports) {
+        for (Report report : reports) {
+            addReport(report);
+        }
     }
 
     public ArrayList<Report> getReports() {
