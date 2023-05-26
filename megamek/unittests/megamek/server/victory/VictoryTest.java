@@ -72,4 +72,47 @@ public class VictoryTest {
         game.setForceVictory(false);
         Assert.assertFalse(game.getVictory().checkForVictory(game, game.getVictoryContext()).victory());
     }
+
+    @Test
+    public void testOptionalVictory(){
+        IGame game = new Game();
+
+        IPlayer player1 = new Player(1, "tester1");
+        IPlayer player2 = new Player(2, "tester2");
+        player1.setTeam(1);
+        player2.setTeam(2);
+
+        game.addPlayer(1, player1);
+        game.addPlayer(2, player2);
+
+        Entity gun = new GunEmplacement();
+        Entity squadron = new FighterSquadron();
+
+        gun.setOwner(player1);
+        squadron.setOwner(player2);
+        game.addEntity(gun);
+        game.addEntity(squadron);
+
+        game.createVictoryConditions();
+
+        GameOptions gameOptions = game.getOptions();
+
+        Victory victory = new Victory(gameOptions);
+        VictoryResult vr = victory.checkForVictory(game, game.getVictoryContext());
+
+        Assert.assertFalse(vr.victory());
+
+        // changes to gameOptions to enable checking for optional victory
+        gameOptions.getOption(OptionsConstants.VICTORY_USE_BV_RATIO).setValue(true);
+
+        victory = new Victory(gameOptions);
+        vr = victory.checkForVictory(game, game.getVictoryContext());
+
+        Assert.assertTrue(vr.victory());
+        gameOptions.getOption(OptionsConstants.VICTORY_ACHIEVE_CONDITIONS).setValue(2);
+
+        victory =  new Victory(gameOptions);
+        vr = victory.checkForVictory(game, game.getVictoryContext());
+        Assert.assertFalse(vr.victory());
+    }
 }
