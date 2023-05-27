@@ -110,15 +110,16 @@ public class VictoryResult implements IResult {
     }
 
     public boolean isWinningPlayer(int id) {
-        double d = getPlayerScore(id);
-        // two decimal compare..
-        return ((d * 100) % 100) == ((hiScore * 100) % 100);
+        return isWinningUnit(getPlayerScore(id));
     }
 
     public boolean isWinningTeam(int id) {
-        double d = getTeamScore(id);
+        return isWinningUnit(getTeamScore(id));
+    }
+
+    public boolean isWinningUnit(double score){
         // two decimal compare..
-        return ((d * 100) % 100) == ((hiScore * 100) % 100);
+        return ((score * 100) % 100) == ((hiScore * 100) % 100);
     }
 
     public boolean victory() {
