@@ -43,6 +43,28 @@ public class GameTest {
         Assert.assertEquals(game.getTeamForPlayer(player2).getId(), 4);
     }
 
+    @Test
+    public void testRemovePlayer(){
+        IPlayer player1 = new Player(1, "tester1");
+        IPlayer player2 = new Player(2, "tester2");
+
+        IGame game = new Game();
+
+        game.addPlayer(1, player1);
+        game.addPlayer(2, player2);
+
+        Assert.assertEquals(game.getNoOfPlayers(), 2);
+
+        game.removePlayer(2);
+        Assert.assertEquals(game.getNoOfPlayers(), 1);
+
+        game.removePlayer(1);
+        Assert.assertEquals(game.getNoOfPlayers(), 0);
+
+        game.removePlayer(1);
+        Assert.assertEquals(game.getNoOfPlayers(), 0);
+
+    }
 
     @Test
     public void testVictoryPlayer(){
