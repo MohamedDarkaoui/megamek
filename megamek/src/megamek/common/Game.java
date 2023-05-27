@@ -392,57 +392,89 @@ public class Game implements Serializable, IGame {
      * their own object
      */
     public void setupTeams() {
-        Vector<Team> initTeams = new Vector<Team>();
+        Vector<Team> initTeams = new Vector<>();
         boolean useTeamInit = getOptions().getOption(OptionsConstants.BASE_TEAM_INITIATIVE)
                                           .booleanValue();
 
-        // Get all NO_TEAM players. If team_initiative is false, all
-        // players are on their own teams for initiative purposes.
+        addNoTeamPlayersToInitTeams(initTeams, useTeamInit);
+
+        if (useTeamInit) {
+            addTeamPlayersToInitTeams(initTeams);
+        }
+
+        // May need to copy state over from previous teams, such as initiative
+        if ((teams != null) && (getPhase() != Phase.PHASE_LOUNGE)) {
+            copyStateFromPreviousTeam(initTeams);
+        }
+        teams = initTeams;
+    }
+
+    /**
+     * Adds players without teams to a new team depending on the useTeamInit option
+     * @param initTeams The vector of initial teams to which new teams are added.
+     * @param useTeamInit Specifies whether team initiative mode is in use.
+     */
+    private void addNoTeamPlayersToInitTeams(Vector<Team> initTeams, boolean useTeamInit) {
         for (Enumeration<IPlayer> i = getPlayers(); i.hasMoreElements(); ) {
             final IPlayer player = i.nextElement();
-            // Ignore players not on a team
-            if (player.getTeam() == IPlayer.TEAM_UNASSIGNED) {
-                continue;
-            }
-            if (!useTeamInit || (player.getTeam() == IPlayer.TEAM_NONE)) {
+            int tu = IPlayer.TEAM_UNASSIGNED;
+            if (player.getTeam() != tu && (!useTeamInit || (player.getTeam() == IPlayer.TEAM_NONE))){
                 Team new_team = new Team(IPlayer.TEAM_NONE);
                 new_team.addPlayer(player);
                 initTeams.addElement(new_team);
             }
         }
-
-        if (useTeamInit) {
-            // Now, go through all the teams, and add the appropriate player
-            for (int t = IPlayer.TEAM_NONE + 1; t < IPlayer.MAX_TEAMS; t++) {
-                Team new_team = null;
-                for (Enumeration<IPlayer> i = getPlayers(); i.hasMoreElements(); ) {
-                    final IPlayer player = i.nextElement();
-                    if (player.getTeam() == t) {
-                        if (new_team == null) {
-                            new_team = new Team(t);
-                        }
-                        new_team.addPlayer(player);
-                    }
-                }
-
-                if (new_team != null) {
-                    initTeams.addElement(new_team);
-                }
-            }
-        }
-
-        // May need to copy state over from previous teams, such as initiative
-        if ((teams != null) && (getPhase() != Phase.PHASE_LOUNGE)) {
-            for (Team newTeam : initTeams) {
-                for (Team oldTeam : teams) {
-                    if (newTeam.equals(oldTeam)) {
-                        newTeam.setInitiative(oldTeam.getInitiative());
-                    }
-                }
-            }
-        }
-        teams = initTeams;
     }
+
+    /**
+     * Iterates through all teams identifiers and creates a new team for each identifier.
+     * For each team it assigns the players that are part of it. The new teams
+     * are added to the provided vector of initial teams.
+     * @param initTeams The vector of initial teams to which new teams are added.
+     */
+    private void addTeamPlayersToInitTeams(Vector<Team> initTeams){
+        for (int t = IPlayer.TEAM_NONE + 1; t < IPlayer.MAX_TEAMS; t++) {
+            Team new_team = addPlayersToTheirTeam(t);
+            if (new_team != null) {
+                initTeams.addElement(new_team);
+            }
+        }
+    }
+
+    /**
+     * Iterates through all players and adds each one to the corresponding team which is returned.
+     * @param teamId The team identifier
+     * @return A new Team object that contains players that belong to the same team with id = teamId
+     * or null if no such players exist.
+     */
+    private Team addPlayersToTheirTeam(int teamId) {
+        Team new_team = null;
+        for (Enumeration<IPlayer> i = getPlayers(); i.hasMoreElements(); ) {
+            final IPlayer player = i.nextElement();
+            if (player.getTeam() == teamId) {
+                if (new_team == null) {
+                    new_team = new Team(teamId);
+                }
+                new_team.addPlayer(player);
+            }
+        }
+        return new_team;
+    }
+
+    /**
+     * Copies initiative state from previous teams
+     * @param initTeams the list of teams
+     */
+    private void copyStateFromPreviousTeam(Vector<Team> initTeams) {
+        for (Team newTeam : initTeams) {
+            for (Team oldTeam : teams) {
+                if (newTeam.equals(oldTeam)) {
+                    newTeam.setInitiative(oldTeam.getInitiative());
+                }
+            }
+        }
+    }
+
 
     /**
      * Return an enumeration of player in the game
