@@ -499,7 +499,7 @@ public class Game implements Serializable, IGame {
     public void removePlayer(int id) {
         IPlayer playerToRemove = getPlayer(id);
         players.removeElement(playerToRemove);
-        playerIds.remove(Integer.valueOf(id));
+        playerIds.remove(id);
         setupTeams();
         processGameEvent(new GamePlayerChangeEvent(this, playerToRemove));
     }
