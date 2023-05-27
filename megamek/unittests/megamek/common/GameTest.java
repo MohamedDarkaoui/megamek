@@ -103,4 +103,54 @@ public class GameTest {
 
         Assert.assertEquals(winnerTeamID, 3);
     }
+
+    @Test
+    public void testSetupTeams(){
+        IPlayer player1 = new Player(1, "tester1");
+        IPlayer player2 = new Player(2, "tester2");
+        IPlayer player3 = new Player(3, "tester3");
+        IPlayer playerNoTeam = new Player(4, "tester4");
+        IPlayer playerTeamUnassigned = new Player(5, "tester5");
+
+        player1.setTeam(3);
+        player2.setTeam(4);
+        player3.setTeam(5);
+        playerNoTeam.setTeam(IPlayer.TEAM_NONE);
+        playerTeamUnassigned.setTeam(IPlayer.TEAM_UNASSIGNED);
+
+        IGame game = new Game();
+
+        game.addPlayer(1,player1);
+        game.addPlayer(2, player2);
+        game.addPlayer(3, player3);
+        game.addPlayer(4, playerNoTeam);
+        game.addPlayer(5, playerTeamUnassigned);
+
+        Assert.assertEquals(game.getTeamForPlayer(player1).getId(), 3);
+        Assert.assertEquals(game.getTeamForPlayer(player2).getId(), 4);
+        Assert.assertEquals(game.getTeamForPlayer(player3).getId(), 5);
+        Assert.assertEquals(game.getTeamForPlayer(playerNoTeam).getId(), IPlayer.TEAM_NONE);
+        Assert.assertNull(game.getTeamForPlayer(playerTeamUnassigned));
+        Assert.assertEquals(game.getTeamsVector().size(), 4);
+
+        // no changes
+        game.setupTeams();
+        Assert.assertEquals(game.getTeamsVector().size(), 4);
+
+        // change the team of one player
+        player3.setTeam(3);
+        Assert.assertEquals(game.getTeamsVector().size(), 4);   // before calling setupTeams
+        game.setupTeams();
+        Assert.assertEquals(game.getTeamsVector().size(), 3);   // after cleanup, only 3 teams left
+        Assert.assertEquals(game.getTeamForPlayer(player3).getId(), 3);
+
+        // At this point the teams left are  {team IPlayer.TEAM_NONE, team 3, team 4}
+
+        player2.setTeam(IPlayer.TEAM_UNASSIGNED);
+        Assert.assertEquals(game.getTeamsVector().size(), 3);
+        game.setupTeams();
+        Assert.assertEquals(game.getTeamsVector().size(), 2);
+        Assert.assertNull(game.getTeamForPlayer(player2));
+
+    }
 }
