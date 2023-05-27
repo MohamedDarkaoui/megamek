@@ -17,44 +17,45 @@ public class GameTest {
 
     @Test
     public void testAddPlayer(){
-        IPlayer Player1 = new Player(1, "tester1");
-        IPlayer Player2 = new Player(2, "tester2");
-        IPlayer Player3 = new Player(2, "tester3");
+        IPlayer player1 = new Player(1, "tester1");
+        IPlayer player2 = new Player(2, "tester2");
+        IPlayer player3 = new Player(2, "tester3");
 
-        Player1.setTeam(5);
-        Player2.setTeam(4);
-        Player3.setTeam(4);
+        player1.setTeam(5);
+        player2.setTeam(4);
+        player3.setTeam(4);
 
         IGame game = new Game();
 
-        game.addPlayer(1, Player1);
-        game.addPlayer(2, Player2);
-        game.addPlayer(3, Player3);
+        game.addPlayer(1, player1);
+        game.addPlayer(2, player2);
+        game.addPlayer(3, player3);
 
-        Assert.assertEquals(game.getPlayer(1), Player1);
-        Assert.assertEquals(game.getPlayer(2), Player2);
-        Assert.assertEquals(game.getPlayer(3), Player3);
+        Assert.assertEquals(game.getPlayer(1), player1);
+        Assert.assertEquals(game.getPlayer(2), player2);
+        Assert.assertEquals(game.getPlayer(3), player3);
 
         List<Team> teams = game.getTeamsVector();
 
         Assert.assertEquals(teams.size(), 2);
-        Assert.assertEquals(game.getTeamForPlayer(Player1).getId(), 5);
-        Assert.assertEquals(game.getTeamForPlayer(Player2).getId(), 4);
-        Assert.assertEquals(game.getTeamForPlayer(Player2).getId(), 4);
+        Assert.assertEquals(game.getTeamForPlayer(player1).getId(), 5);
+        Assert.assertEquals(game.getTeamForPlayer(player2).getId(), 4);
+        Assert.assertEquals(game.getTeamForPlayer(player2).getId(), 4);
     }
+
 
     @Test
     public void testVictoryPlayer(){
-        IPlayer Player1 = new Player(1, "tester1");
-        IPlayer Player2 = new Player(2, "tester2");
+        IPlayer player1 = new Player(1, "tester1");
+        IPlayer player2 = new Player(2, "tester2");
 
-        Player1.setTeam(4);
-        Player2.setTeam(3);
+        player1.setTeam(4);
+        player2.setTeam(3);
 
         IGame game = new Game();
 
-        game.addPlayer(1,Player1);
-        game.addPlayer(2, Player2);
+        game.addPlayer(1,player1);
+        game.addPlayer(2, player2);
 
         game.setVictoryPlayerId(1);
         int winnerID = game.getVictoryPlayerId();
@@ -64,16 +65,16 @@ public class GameTest {
 
     @Test
     public void testVictoryTeam(){
-        IPlayer Player1 = new Player(1, "tester1");
-        IPlayer Player2 = new Player(2, "tester2");
+        IPlayer player1 = new Player(1, "tester1");
+        IPlayer player2 = new Player(2, "tester2");
 
-        Player1.setTeam(4);
-        Player2.setTeam(3);
+        player1.setTeam(4);
+        player2.setTeam(3);
 
         IGame game = new Game();
 
-        game.addPlayer(1,Player1);
-        game.addPlayer(2, Player2);
+        game.addPlayer(1,player1);
+        game.addPlayer(2, player2);
 
         game.setVictoryTeam(3);
         int winnerTeamID = game.getVictoryTeam();
