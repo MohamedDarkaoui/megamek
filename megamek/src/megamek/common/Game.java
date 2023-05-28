@@ -54,6 +54,7 @@ import megamek.common.options.OptionsConstants;
 import megamek.common.weapons.AttackHandler;
 import megamek.server.SmokeCloud;
 import megamek.server.victory.Victory;
+import megamek.server.victory.VictoryResult;
 
 /**
  * The game class is the root of all data about the game in progress. Both the
@@ -2777,6 +2778,45 @@ public class Game implements Serializable, IGame {
      */
     public void setForceVictory(boolean forceVictory) {
         this.forceVictory = forceVictory;
+    }
+
+    public List<Report> getVictoryReports() {
+        VictoryResult vr = victory.checkForVictory(this, getVictoryContext());
+        List<Report> reports = vr.getReports();
+        if (vr.victory()) {
+            boolean draw = vr.isDraw();
+            int wonPlayer = vr.getWinningPlayer();
+            int wonTeam = vr.getWinningTeam();
+
+            if (wonPlayer != IPlayer.PLAYER_NONE) {
+                Report r = new Report(7200, Report.PUBLIC);
+                r.add(getPlayer(wonPlayer).getColourString());
+                reports.add(r);
+            }
+            if (wonTeam != IPlayer.TEAM_NONE) {
+                Report r = new Report(7200, Report.PUBLIC);
+                r.add("Team " + wonTeam);
+                reports.add(r);
+            }
+            if (draw) {
+                // multiple-won draw
+                setVictoryPlayerId(IPlayer.PLAYER_NONE);
+                setVictoryTeam(IPlayer.TEAM_NONE);
+            } else {
+                // nobody-won draw or
+                // single player won or
+                // single team won
+                setVictoryPlayerId(wonPlayer);
+                setVictoryTeam(wonTeam);
+            }
+        } else {
+            setVictoryPlayerId(IPlayer.PLAYER_NONE);
+            setVictoryTeam(IPlayer.TEAM_NONE);
+            if (isForceVictory()) {
+                cancelVictory();
+            }
+        }
+        return reports;
     }
 
     public void cancelVictory() {

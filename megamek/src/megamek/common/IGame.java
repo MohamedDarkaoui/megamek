@@ -232,6 +232,7 @@ public interface IGame {
      */
     abstract int getNbrMinefields(Coords coords);
 
+    
     /**
      * Get the coordinates of all mined hexes in the game.
      *
@@ -1224,6 +1225,12 @@ public interface IGame {
      * @param forceVictory New value of property forceVictory.
      */
     abstract void setForceVictory(boolean forceVictory);
+
+    /**
+     * Generates reports depending on the victory state
+     * @return list that contains existing and generated reports
+     */
+    public List<Report> getVictoryReports();
 
     /**
      * cancels victory

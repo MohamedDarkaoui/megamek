@@ -3304,45 +3304,11 @@ public class Server implements Runnable {
      */
     public boolean victory() {
         VictoryResult vr = game.getVictory().checkForVictory(game, game.getVictoryContext());
-        for (Report r : vr.getReports()) {
+        for (Report r : game.getVictoryReports()) {
             addReport(r);
         }
-
-        if (vr.victory()) {
-            boolean draw = vr.isDraw();
-            int wonPlayer = vr.getWinningPlayer();
-            int wonTeam = vr.getWinningTeam();
-
-            if (wonPlayer != IPlayer.PLAYER_NONE) {
-                Report r = new Report(7200, Report.PUBLIC);
-                r.add(game.getPlayer(wonPlayer).getColourString());
-                addReport(r);
-            }
-            if (wonTeam != IPlayer.TEAM_NONE) {
-                Report r = new Report(7200, Report.PUBLIC);
-                r.add("Team " + wonTeam);
-                addReport(r);
-            }
-            if (draw) {
-                // multiple-won draw
-                game.setVictoryPlayerId(IPlayer.PLAYER_NONE);
-                game.setVictoryTeam(IPlayer.TEAM_NONE);
-            } else {
-                // nobody-won draw or
-                // single player won or
-                // single team won
-                game.setVictoryPlayerId(wonPlayer);
-                game.setVictoryTeam(wonTeam);
-            }
-        } else {
-            game.setVictoryPlayerId(IPlayer.PLAYER_NONE);
-            game.setVictoryTeam(IPlayer.TEAM_NONE);
-            if (game.isForceVictory()) {
-                cancelVictory();
-            }
-        }
         return vr.victory();
-    }// end victory
+    }
 
     private boolean isPlayerForcedVictory() {
         // check game options
