@@ -10,43 +10,29 @@ import java.util.List;
 @RunWith(JUnit4.class)
 public class GameTest {
 
+    private IGame createGame(int nrPlayers, int... teams){
+        IGame game = new Game();
+        for (int i = 1; i <= nrPlayers; i++){
+            IPlayer player = new Player(i, "tester" + i);
+            if (teams.length > 0){
+                player.setTeam(teams[i-1]);
+            }
+            game.addPlayer(player.getId(), player);
+        }
+        return game;
+    }
     @Test
     public void testAddPlayer(){
-        IPlayer player1 = new Player(1, "tester1");
-        IPlayer player2 = new Player(2, "tester2");
-        IPlayer player3 = new Player(2, "tester3");
+        IGame game = createGame(3, 5,4,4);
 
-        player1.setTeam(5);
-        player2.setTeam(4);
-        player3.setTeam(4);
-
-        IGame game = new Game();
-
-        game.addPlayer(1, player1);
-        game.addPlayer(2, player2);
-        game.addPlayer(3, player3);
-
-        Assert.assertEquals(game.getPlayer(1), player1);
-        Assert.assertEquals(game.getPlayer(2), player2);
-        Assert.assertEquals(game.getPlayer(3), player3);
-
-        List<Team> teams = game.getTeamsVector();
-
-        Assert.assertEquals(teams.size(), 2);
-        Assert.assertEquals(game.getTeamForPlayer(player1).getId(), 5);
-        Assert.assertEquals(game.getTeamForPlayer(player2).getId(), 4);
-        Assert.assertEquals(game.getTeamForPlayer(player2).getId(), 4);
+        Assert.assertEquals(game.getPlayer(1).getId(), 1);
+        Assert.assertEquals(game.getPlayer(2).getId(), 2);
+        Assert.assertEquals(game.getPlayer(3).getId(), 3);
     }
 
     @Test
     public void testRemovePlayer(){
-        IPlayer player1 = new Player(1, "tester1");
-        IPlayer player2 = new Player(2, "tester2");
-
-        IGame game = new Game();
-
-        game.addPlayer(1, player1);
-        game.addPlayer(2, player2);
+        IGame game = createGame(2);
 
         Assert.assertEquals(game.getNoOfPlayers(), 2);
 
@@ -63,16 +49,7 @@ public class GameTest {
 
     @Test
     public void testVictoryPlayer(){
-        IPlayer player1 = new Player(1, "tester1");
-        IPlayer player2 = new Player(2, "tester2");
-
-        player1.setTeam(4);
-        player2.setTeam(3);
-
-        IGame game = new Game();
-
-        game.addPlayer(1,player1);
-        game.addPlayer(2, player2);
+        IGame game = createGame(2, 3,4);
 
         game.setVictoryPlayerId(1);
         int winnerID = game.getVictoryPlayerId();
@@ -82,16 +59,7 @@ public class GameTest {
 
     @Test
     public void testVictoryTeam(){
-        IPlayer player1 = new Player(1, "tester1");
-        IPlayer player2 = new Player(2, "tester2");
-
-        player1.setTeam(4);
-        player2.setTeam(3);
-
-        IGame game = new Game();
-
-        game.addPlayer(1,player1);
-        game.addPlayer(2, player2);
+        IGame game = createGame(2, 4, 3);
 
         game.setVictoryTeamId(3);
         int winnerTeamID = game.getVictoryTeamId();
@@ -101,31 +69,13 @@ public class GameTest {
 
     @Test
     public void testSetupTeams(){
-        IPlayer player1 = new Player(1, "tester1");
-        IPlayer player2 = new Player(2, "tester2");
-        IPlayer player3 = new Player(3, "tester3");
-        IPlayer playerNoTeam = new Player(4, "tester4");
-        IPlayer playerTeamUnassigned = new Player(5, "tester5");
+        IGame game = createGame(5, 3,4,5,IPlayer.TEAM_NONE,IPlayer.TEAM_UNASSIGNED);
 
-        player1.setTeam(3);
-        player2.setTeam(4);
-        player3.setTeam(5);
-        playerNoTeam.setTeam(IPlayer.TEAM_NONE);
-        playerTeamUnassigned.setTeam(IPlayer.TEAM_UNASSIGNED);
-
-        IGame game = new Game();
-
-        game.addPlayer(1,player1);
-        game.addPlayer(2, player2);
-        game.addPlayer(3, player3);
-        game.addPlayer(4, playerNoTeam);
-        game.addPlayer(5, playerTeamUnassigned);
-
-        Assert.assertEquals(game.getTeamForPlayer(player1).getId(), 3);
-        Assert.assertEquals(game.getTeamForPlayer(player2).getId(), 4);
-        Assert.assertEquals(game.getTeamForPlayer(player3).getId(), 5);
-        Assert.assertEquals(game.getTeamForPlayer(playerNoTeam).getId(), IPlayer.TEAM_NONE);
-        Assert.assertNull(game.getTeamForPlayer(playerTeamUnassigned));
+        Assert.assertEquals(game.getTeamForPlayer(game.getPlayer(1)).getId(), 3);
+        Assert.assertEquals(game.getTeamForPlayer(game.getPlayer(2)).getId(), 4);
+        Assert.assertEquals(game.getTeamForPlayer(game.getPlayer(3)).getId(), 5);
+        Assert.assertEquals(game.getTeamForPlayer(game.getPlayer(4)).getId(), IPlayer.TEAM_NONE);
+        Assert.assertNull(game.getTeamForPlayer(game.getPlayer(5)));
         Assert.assertEquals(game.getTeamsVector().size(), 4);
 
         // no changes
@@ -133,19 +83,18 @@ public class GameTest {
         Assert.assertEquals(game.getTeamsVector().size(), 4);
 
         // change the team of one player
-        player3.setTeam(3);
+        game.getPlayer(3).setTeam(3);
         Assert.assertEquals(game.getTeamsVector().size(), 4);   // before calling setupTeams
         game.setupTeams();
         Assert.assertEquals(game.getTeamsVector().size(), 3);   // after cleanup, only 3 teams left
-        Assert.assertEquals(game.getTeamForPlayer(player3).getId(), 3);
+        Assert.assertEquals(game.getTeamForPlayer(game.getPlayer(3)).getId(), 3);
 
         // At this point the teams left are  {team IPlayer.TEAM_NONE, team 3, team 4}
 
-        player2.setTeam(IPlayer.TEAM_UNASSIGNED);
+        game.getPlayer(2).setTeam(IPlayer.TEAM_UNASSIGNED);
         Assert.assertEquals(game.getTeamsVector().size(), 3);
         game.setupTeams();
         Assert.assertEquals(game.getTeamsVector().size(), 2);
-        Assert.assertNull(game.getTeamForPlayer(player2));
-
+        Assert.assertNull(game.getTeamForPlayer(game.getPlayer(2)));
     }
 }
