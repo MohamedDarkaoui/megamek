@@ -1226,6 +1226,11 @@ public interface IGame {
     abstract void setForceVictory(boolean forceVictory);
 
     /**
+     * cancels victory
+     */
+    public void cancelVictory();
+
+    /**
      * Adds the given reports vector to the GameReport collection.
      *
      * @param v Vector of reports

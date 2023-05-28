@@ -1943,6 +1943,7 @@ public class Server implements Runnable {
     /**
      * Cancels the force victory
      */
+    @Deprecated
     public void cancelVictory() {
         game.setForceVictory(false);
         game.setVictoryPlayerId(IPlayer.PLAYER_NONE);

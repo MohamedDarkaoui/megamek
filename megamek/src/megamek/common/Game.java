@@ -2779,6 +2779,12 @@ public class Game implements Serializable, IGame {
         this.forceVictory = forceVictory;
     }
 
+    public void cancelVictory() {
+        setForceVictory(false);
+        setVictoryPlayerId(IPlayer.PLAYER_NONE);
+        setVictoryTeam(IPlayer.TEAM_NONE);
+    }
+
     public void addReports(Vector<Report> v) {
         if (v.size() == 0) {
             return;
