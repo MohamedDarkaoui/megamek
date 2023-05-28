@@ -1319,6 +1319,18 @@ public interface IGame {
     abstract void setVictoryTeamId(int victoryTeamId);
 
     /**
+     * Fetches the victory team if there is one
+     * @return the victory team or null
+     */
+    abstract Team getVictoryTeam();
+
+    /**
+     * Fetches all players that have won
+     * @return a list of players that have won
+     */
+    abstract  List<IPlayer> getAllWinningPlayers();
+
+    /**
      * Returns true if the specified player is either the victor, or is on the
      * winning team. Best to call during PHASE_VICTORY.
      * @param player

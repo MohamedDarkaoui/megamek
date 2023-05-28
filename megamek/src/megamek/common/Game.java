@@ -2898,6 +2898,43 @@ public class Game implements Serializable, IGame {
     }
 
     /**
+     * Fetches the team that has won the game
+     * @return the winning team if there is one, otherwise null
+     */
+    public Team getVictoryTeam() {
+        if (victoryTeamId == IPlayer.TEAM_NONE) {
+            return null;
+        }
+        for (Team team : teams) {
+            if (team.getId() == victoryTeamId){
+                return team;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Fetches all players that have won
+     * @return a list of players that have won
+     */
+    public List<IPlayer> getAllWinningPlayers(){
+        List<IPlayer> winners = new ArrayList<>();
+        Team victoryTeam = getVictoryTeam();
+
+        if (victoryPlayerId != IPlayer.PLAYER_NONE){
+            winners.add(getPlayer(victoryPlayerId));
+            return winners;
+        }
+
+        if (victoryTeam == null){
+            return winners;
+        }
+
+        winners.addAll(victoryTeam.getPlayersVector());
+        return winners;
+    }
+
+    /**
      * Setter for property victoryTeam.
      *
      * @param victoryTeamId New value of property victoryTeam.
