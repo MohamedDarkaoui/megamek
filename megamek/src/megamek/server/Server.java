@@ -289,6 +289,8 @@ public class Server implements Runnable {
 
     private Vector<Report> vPhaseReport = new Vector<>();
 
+    private RatingManager ratingManager;
+
     public Vector<Report> getvPhaseReport() {
         return vPhaseReport;
     }
@@ -520,6 +522,14 @@ public class Server implements Runnable {
             serverBrowserUpdateTimer = new Timer(
                     "Server Browser Register Timer", true);
             serverBrowserUpdateTimer.schedule(register, 1, 40000);
+        }
+
+        // load rating manager from storage
+        ratingManager = RatingManager.load();
+        if (ratingManager == null) {    // when an exception is caught, the loader returns null
+            ratingManager = new RatingManager();
+            // we don't want to lose the rankings, so we just let players play without updating their rank
+            game.setIsRanked(false);
         }
 
         // Fully initialised, now accept connections

@@ -177,6 +177,9 @@ public class Game implements Serializable, IGame {
 
     transient private Vector<GameListener> gameListeners = new Vector<GameListener>();
 
+    // rating
+    private boolean isRankedGame = true;
+
     /**
      * Constructor
      */
@@ -222,6 +225,14 @@ public class Game implements Serializable, IGame {
         }
 
         return mfs.size();
+    }
+
+    public boolean getIsRanked(){
+        return isRankedGame;
+    }
+
+    public void setIsRanked(boolean isRanked){
+        isRankedGame = isRanked;
     }
 
     /**

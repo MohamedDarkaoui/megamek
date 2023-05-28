@@ -233,6 +233,17 @@ public interface IGame {
      */
     abstract int getNbrMinefields(Coords coords);
 
+    /**
+     * get th boolean value of isRankedGame
+     * @return whether the game is a ranked game or not
+     */
+    abstract  boolean getIsRanked();
+
+    /**
+     * sets the value of isRankedGame
+     * @param isRanked the value of isRankedGame
+     */
+    abstract void setIsRanked(boolean isRanked);
 
     /**
      * Get the coordinates of all mined hexes in the game.
