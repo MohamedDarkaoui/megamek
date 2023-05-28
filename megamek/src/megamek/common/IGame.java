@@ -36,6 +36,7 @@ import megamek.common.options.OptionsConstants;
 import megamek.common.weapons.AttackHandler;
 import megamek.server.SmokeCloud;
 import megamek.server.victory.Victory;
+import megamek.server.victory.VictoryResult;
 
 /**
  * This interface is the root of all data about the game in progress. Both the
@@ -232,7 +233,7 @@ public interface IGame {
      */
     abstract int getNbrMinefields(Coords coords);
 
-    
+
     /**
      * Get the coordinates of all mined hexes in the game.
      *
@@ -1227,15 +1228,21 @@ public interface IGame {
     abstract void setForceVictory(boolean forceVictory);
 
     /**
+     * Generates a VictoryResult from victory
+     * @return the VictoryResult
+     */
+    abstract VictoryResult generateVictoryResult();
+
+    /**
      * Generates reports depending on the victory state
      * @return list that contains existing and generated reports
      */
-    public List<Report> getVictoryReports();
+    abstract List<Report> getVictoryReports();
 
     /**
      * cancels victory
      */
-    public void cancelVictory();
+    abstract void cancelVictory();
 
     /**
      * Adds the given reports vector to the GameReport collection.

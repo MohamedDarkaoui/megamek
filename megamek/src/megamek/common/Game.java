@@ -2780,8 +2780,12 @@ public class Game implements Serializable, IGame {
         this.forceVictory = forceVictory;
     }
 
+    public VictoryResult generateVictoryResult() {
+        return victory.checkForVictory(this, victoryContext);
+    }
+
     public List<Report> getVictoryReports() {
-        VictoryResult vr = victory.checkForVictory(this, getVictoryContext());
+        VictoryResult vr = generateVictoryResult();
         List<Report> reports = vr.getReports();
         if (vr.victory()) {
             boolean draw = vr.isDraw();

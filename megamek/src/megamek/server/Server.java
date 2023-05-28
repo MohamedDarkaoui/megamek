@@ -545,17 +545,17 @@ public class Server implements Runnable {
         }
 
         List<Integer> orphanEntities = new ArrayList<>();
-                
+
         // reattach the transient fields and ghost the players
         for (Iterator<Entity> e = game.getEntities(); e.hasNext(); ) {
             Entity ent = e.next();
             ent.setGame(game);
-            
+
             if(ent.getOwner() == null) {
                 orphanEntities.add(ent.getId());
                 continue;
             }
-            
+
             if (ent instanceof Mech) {
                 ((Mech) ent).setBAGrabBars();
                 ((Mech) ent).setProtomechClampMounts();
@@ -564,9 +564,9 @@ public class Server implements Runnable {
                 ((Tank) ent).setBAGrabBars();
             }
         }
-        
+
         game.removeEntities(orphanEntities, IEntityRemovalConditions.REMOVE_UNKNOWN);
-        
+
         game.setOutOfGameEntitiesVector(game.getOutOfGameEntitiesVector());
         for (Enumeration<IPlayer> e = game.getPlayers(); e.hasMoreElements(); ) {
             IPlayer p = e.nextElement();
@@ -790,7 +790,7 @@ public class Server implements Runnable {
         if (!version.equals(MegaMek.VERSION)) {
             buf.append("Client/Server version mismatch. Server reports: ").append(MegaMek.VERSION)
                     .append(", Client reports: ").append(version);
-            MegaMek.getLogger().error("Client/Server Version Mismatch -- Client: " 
+            MegaMek.getLogger().error("Client/Server Version Mismatch -- Client: "
                     + version + " Server: " + MegaMek.VERSION);
             needs = true;
         }
@@ -818,7 +818,7 @@ public class Server implements Runnable {
             }
             buf.append("Client/Server checksum mismatch. Server reports: ").append(serverChecksum)
                     .append(", Client reports: ").append(clientChecksum);
-            MegaMek.getLogger().error("Client/Server Checksum Mismatch -- Client: " + clientChecksum 
+            MegaMek.getLogger().error("Client/Server Checksum Mismatch -- Client: " + clientChecksum
                     + " Server: " + serverChecksum);
 
             needs = true;
@@ -833,7 +833,7 @@ public class Server implements Runnable {
                         + buf.toString());
             }
         } else {
-            MegaMek.getLogger().info("SUCCESS: Client/Server Version (" + version + ") and Checksum (" 
+            MegaMek.getLogger().info("SUCCESS: Client/Server Version (" + version + ") and Checksum ("
                     + clientChecksum + ") matched");
         }
     }
@@ -980,7 +980,7 @@ public class Server implements Runnable {
                 send(connId, createAttackPacket(game.getRamsVector(), 1));
                 send(connId, createAttackPacket(game.getTeleMissileAttacksVector(), 1));
             }
-            
+
             if (game.phaseHasTurns(game.getPhase()) && game.hasMoreTurns()) {
                 send(connId, createTurnVectorPacket());
                 send(connId, createTurnIndexPacket(connId));
@@ -2554,12 +2554,12 @@ public class Server implements Runnable {
         if (!game.hasMoreTurns()) {
             return false;
         }
-        
+
         for (Iterator<Entity> e = game.getEntities(); e.hasNext();) {
             Entity entity = e.next();
             for (Mounted mounted : entity.getAmmo()) {
                 AmmoType ammoType = (AmmoType) mounted.getType();
-                
+
                 // per errata, TAG will spot for LRMs and such
                 if ((ammoType.getAmmoType() == AmmoType.T_LRM)
                         || (ammoType.getAmmoType() == AmmoType.T_LRM_IMP)
@@ -2568,7 +2568,7 @@ public class Server implements Runnable {
                         || (ammoType.getAmmoType() == AmmoType.T_MEK_MORTAR)) {
                     return true;
                 }
-                
+
                 if (((ammoType.getAmmoType() == AmmoType.T_ARROW_IV)
                         || (ammoType.getAmmoType() == AmmoType.T_LONG_TOM)
                         || (ammoType.getAmmoType() == AmmoType.T_SNIPER)
@@ -2577,7 +2577,7 @@ public class Server implements Runnable {
                     return true;
                 }
             }
-            
+
             for (Mounted b : entity.getBombs()) {
                 if (!b.isDestroyed() && (b.getUsableShotsLeft() > 0)
                     && (((BombType) b.getType()).getBombType() == BombType.B_LG)) {
@@ -2585,7 +2585,7 @@ public class Server implements Runnable {
                 }
             }
         }
-        
+
         // loop through all current attacks
         // if there are any that use homing ammo, we are playable
         // we need to do this because we might have a homing arty shot in flight
@@ -3097,22 +3097,22 @@ public class Server implements Runnable {
         if (game.getOptions().booleanOption(OptionsConstants.RPG_INDIVIDUAL_INITIATIVE)) {
             return;
         }
-        
+
         // if the player isn't on a team, there is no next team by definition. Skip the rest.
         Team currentPlayerTeam = game.getTeamForPlayer(current);
         if (currentPlayerTeam == null) {
             return;
         }
-        
+
         // get the next player from the team this player is on.
         IPlayer next = currentPlayerTeam.getNextValidPlayer(current, game);
-        
+
         while (!next.equals(current)) {
             // if the chosen player is a valid player, we change the turn order and
             // inform the clients.
             if ((next != null) && (game.getEntitiesOwnedBy(next) != 0)
                     && (game.getTurnForPlayer(next.getId()) != null)) {
-    
+
                 int currentTurnIndex = game.getTurnIndex();
                 // now look for the next occurrence of player next in the turn order
                 List<GameTurn> turns = game.getTurnVector();
@@ -3126,7 +3126,7 @@ public class Server implements Runnable {
                     // if this is not a general turn the player cannot forward his turn.
                     return;
                 }
-    
+
                 // if it is an EntityClassTurn we have to check make sure, that the
                 // turn it is exchanged with is the same kind of turn!
                 // in fact this requires an access function to the mask of an
@@ -3136,7 +3136,7 @@ public class Server implements Runnable {
                 if (isEntityClassTurn) {
                     classMask = ((GameTurn.EntityClassTurn) turn).getTurnCode();
                 }
-    
+
                 boolean switched = false;
                 int nextTurnId = 0;
                 for (int i = currentTurnIndex; i < turns.size(); i++) {
@@ -3162,7 +3162,7 @@ public class Server implements Runnable {
                         break;
                     }
                 }
-    
+
                 // update turn order
                 if (switched) {
                     game.swapTurnOrder(currentTurnIndex, nextTurnId);
@@ -3173,7 +3173,7 @@ public class Server implements Runnable {
                 }
                 // if nothing changed return without doing anything
             }
-            
+
             next = currentPlayerTeam.getNextValidPlayer(next, game);
         }
     }
@@ -3186,7 +3186,7 @@ public class Server implements Runnable {
     private void changeToNextTurn(int prevPlayerId) {
         boolean minefieldPhase = game.getPhase() == IGame.Phase.PHASE_DEPLOY_MINEFIELDS;
         boolean artyPhase = game.getPhase() == IGame.Phase.PHASE_SET_ARTYAUTOHITHEXES;
-        
+
         GameTurn nextTurn = null;
         Entity nextEntity = null;
         while (game.hasMoreTurns() && (null == nextEntity)) {
@@ -3196,7 +3196,7 @@ public class Server implements Runnable {
                 break;
             }
         }
-   
+
         // if there aren't any more valid turns, end the phase
         // note that some phases don't use entities
         if (((null == nextEntity) && !minefieldPhase) || ((null == nextTurn) && minefieldPhase)) {
@@ -3303,10 +3303,11 @@ public class Server implements Runnable {
      * add some reports to reporting
      */
     public boolean victory() {
-        VictoryResult vr = game.getVictory().checkForVictory(game, game.getVictoryContext());
+        VictoryResult vr = game.generateVictoryResult();
         for (Report r : game.getVictoryReports()) {
             addReport(r);
         }
+
         return vr.victory();
     }
 
