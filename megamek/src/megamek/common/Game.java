@@ -147,7 +147,7 @@ public class Game implements Serializable, IGame {
 
     private boolean forceVictory = false;
     private int victoryPlayerId = Player.PLAYER_NONE;
-    private int victoryTeam = Player.TEAM_NONE;
+    private int victoryTeamId = Player.TEAM_NONE;
 
     private Hashtable<Integer, Vector<Entity>> deploymentTable = new Hashtable<Integer, Vector<Entity>>();
     private int lastDeploymentRound = 0;
@@ -1520,7 +1520,7 @@ public class Game implements Serializable, IGame {
 
         forceVictory = false;
         victoryPlayerId = Player.PLAYER_NONE;
-        victoryTeam = Player.TEAM_NONE;
+        victoryTeamId = Player.TEAM_NONE;
         lastEntityId = 0;
         planetaryConditions = new PlanetaryConditions();
     }
@@ -2816,17 +2816,17 @@ public class Game implements Serializable, IGame {
             if (draw) {
                 // multiple-won draw
                 setVictoryPlayerId(IPlayer.PLAYER_NONE);
-                setVictoryTeam(IPlayer.TEAM_NONE);
+                setVictoryTeamId(IPlayer.TEAM_NONE);
             } else {
                 // nobody-won draw or
                 // single player won or
                 // single team won
                 setVictoryPlayerId(wonPlayer);
-                setVictoryTeam(wonTeam);
+                setVictoryTeamId(wonTeam);
             }
         } else {
             setVictoryPlayerId(IPlayer.PLAYER_NONE);
-            setVictoryTeam(IPlayer.TEAM_NONE);
+            setVictoryTeamId(IPlayer.TEAM_NONE);
             if (isForceVictory()) {
                 cancelVictory();
             }
@@ -2837,7 +2837,7 @@ public class Game implements Serializable, IGame {
     public void cancelVictory() {
         setForceVictory(false);
         setVictoryPlayerId(IPlayer.PLAYER_NONE);
-        setVictoryTeam(IPlayer.TEAM_NONE);
+        setVictoryTeamId(IPlayer.TEAM_NONE);
     }
 
     public void addReports(Vector<Report> v) {
@@ -2865,7 +2865,7 @@ public class Game implements Serializable, IGame {
 
     public void end(int winner, int winnerTeam) {
         setVictoryPlayerId(winner);
-        setVictoryTeam(winnerTeam);
+        setVictoryTeamId(winnerTeam);
         processGameEvent(new GameEndEvent(this));
 
     }
@@ -2893,17 +2893,17 @@ public class Game implements Serializable, IGame {
      *
      * @return Value of property victoryTeam.
      */
-    public int getVictoryTeam() {
-        return victoryTeam;
+    public int getVictoryTeamId() {
+        return victoryTeamId;
     }
 
     /**
      * Setter for property victoryTeam.
      *
-     * @param victoryTeam New value of property victoryTeam.
+     * @param victoryTeamId New value of property victoryTeam.
      */
-    public void setVictoryTeam(int victoryTeam) {
-        this.victoryTeam = victoryTeam;
+    public void setVictoryTeamId(int victoryTeamId) {
+        this.victoryTeamId = victoryTeamId;
     }
 
     /**
@@ -2914,7 +2914,7 @@ public class Game implements Serializable, IGame {
         if (player.getTeam() == IPlayer.TEAM_NONE) {
             return player.getId() == victoryPlayerId;
         }
-        return player.getTeam() == victoryTeam;
+        return player.getTeam() == victoryTeamId;
     }
 
     public HashMap<String, Object> getVictoryContext() {

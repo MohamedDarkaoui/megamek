@@ -38,7 +38,7 @@ public class ForceVictory implements IVictoryConditions, Serializable {
             return VictoryResult.noResult();
         }
         int victoryPlayerId = game.getVictoryPlayerId();
-        int victoryTeam = game.getVictoryTeam();
+        int victoryTeam = game.getVictoryTeamId();
         List<IPlayer> players = game.getPlayersVector();
         boolean forceVictory = true;
 

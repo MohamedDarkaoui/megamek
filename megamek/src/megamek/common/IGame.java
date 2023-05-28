@@ -1309,14 +1309,14 @@ public interface IGame {
      *
      * @return Value of property victoryTeam.
      */
-    abstract int getVictoryTeam();
+    abstract int getVictoryTeamId();
 
     /**
      * Setter for property victoryTeam.
      *
-     * @param victoryTeam New value of property victoryTeam.
+     * @param victoryTeamId New value of property victoryTeam.
      */
-    abstract void setVictoryTeam(int victoryTeam);
+    abstract void setVictoryTeamId(int victoryTeamId);
 
     /**
      * Returns true if the specified player is either the victor, or is on the

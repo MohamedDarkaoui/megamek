@@ -1768,7 +1768,7 @@ public class Server implements Runnable {
         // Declare the victor
         r = new Report(1210);
         r.type = Report.PUBLIC;
-        if (game.getVictoryTeam() == IPlayer.TEAM_NONE) {
+        if (game.getVictoryTeamId() == IPlayer.TEAM_NONE) {
             IPlayer player = getPlayer(game.getVictoryPlayerId());
             if (null == player) {
                 r.messageId = 7005;
@@ -1779,7 +1779,7 @@ public class Server implements Runnable {
         } else {
             // Team victory
             r.messageId = 7015;
-            r.add(game.getVictoryTeam());
+            r.add(game.getVictoryTeamId());
         }
         addReport(r);
 
@@ -1937,10 +1937,10 @@ public class Server implements Runnable {
         game.setForceVictory(true);
         if (victor.getTeam() == IPlayer.TEAM_NONE) {
             game.setVictoryPlayerId(victor.getId());
-            game.setVictoryTeam(IPlayer.TEAM_NONE);
+            game.setVictoryTeamId(IPlayer.TEAM_NONE);
         } else {
             game.setVictoryPlayerId(IPlayer.PLAYER_NONE);
-            game.setVictoryTeam(victor.getTeam());
+            game.setVictoryTeamId(victor.getTeam());
         }
 
         Vector<IPlayer> playersVector = game.getPlayersVector();
@@ -1957,7 +1957,7 @@ public class Server implements Runnable {
     public void cancelVictory() {
         game.setForceVictory(false);
         game.setVictoryPlayerId(IPlayer.PLAYER_NONE);
-        game.setVictoryTeam(IPlayer.TEAM_NONE);
+        game.setVictoryTeamId(IPlayer.TEAM_NONE);
     }
 
     public void requestTeamChange(int team, IPlayer player) {
@@ -3332,8 +3332,8 @@ public class Server implements Runnable {
         }
 
         for (IPlayer player : game.getPlayersVector()) {
-            if ((player.getId() == game.getVictoryPlayerId()) || ((player.getTeam() == game.getVictoryTeam())
-                    && (game.getVictoryTeam() != IPlayer.TEAM_NONE))) {
+            if ((player.getId() == game.getVictoryPlayerId()) || ((player.getTeam() == game.getVictoryTeamId())
+                    && (game.getVictoryTeamId() != IPlayer.TEAM_NONE))) {
                 continue;
             }
 
@@ -30960,7 +30960,7 @@ public class Server implements Runnable {
         Object[] array = new Object[3];
         array[0] = getDetailedVictoryReport();
         array[1] = game.getVictoryPlayerId();
-        array[2] = game.getVictoryTeam();
+        array[2] = game.getVictoryTeamId();
         return new Packet(Packet.COMMAND_END_OF_GAME, array);
     }
 

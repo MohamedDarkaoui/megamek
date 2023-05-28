@@ -1,14 +1,9 @@
 package megamek.common;
 
-import megamek.server.victory.Victory;
-import megamek.server.victory.VictoryResult;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mockito;
-
-import megamek.common.Game;
 
 import java.util.List;
 
@@ -98,8 +93,8 @@ public class GameTest {
         game.addPlayer(1,player1);
         game.addPlayer(2, player2);
 
-        game.setVictoryTeam(3);
-        int winnerTeamID = game.getVictoryTeam();
+        game.setVictoryTeamId(3);
+        int winnerTeamID = game.getVictoryTeamId();
 
         Assert.assertEquals(winnerTeamID, 3);
     }

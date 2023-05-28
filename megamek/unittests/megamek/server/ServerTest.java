@@ -1,5 +1,4 @@
 package megamek.server;
-import megamek.client.ui.swing.util.PlayerColour;
 import megamek.common.*;
 import megamek.common.options.GameOptions;
 import megamek.common.options.OptionsConstants;
@@ -91,7 +90,7 @@ public class ServerTest {
 
         server.forceVictory(victor);
         Assert.assertNotEquals(server.getGame().getVictoryPlayerId(), victor.getId());
-        Assert.assertEquals(server.getGame().getVictoryTeam(), victor.getTeam());
+        Assert.assertEquals(server.getGame().getVictoryTeamId(), victor.getTeam());
         Assert.assertFalse(server.victory());
         Mockito.verify(spyGame).setForceVictory(false);
 
@@ -115,10 +114,10 @@ public class ServerTest {
         // make team 1 win
         game = prepareGame(true);
         server.setGame(game);
-        game.setVictoryTeam(1);
-        Assert.assertEquals(game.getVictoryTeam(), 1);
+        game.setVictoryTeamId(1);
+        Assert.assertEquals(game.getVictoryTeamId(), 1);
         game.cancelVictory();
-        Assert.assertEquals(game.getVictoryTeam(), IPlayer.TEAM_NONE);
+        Assert.assertEquals(game.getVictoryTeamId(), IPlayer.TEAM_NONE);
 
         // force victory
         server.forceVictory(game.getPlayer(5));
