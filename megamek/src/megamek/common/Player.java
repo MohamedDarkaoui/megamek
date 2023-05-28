@@ -292,6 +292,9 @@ public final class Player extends TurnOrdered implements IPlayer {
         return colour;
     }
 
+    public String getColourString() {
+        return "<B><font color='" + colour.getHexString(0x00F0F0F0) + "'>" + name + "</font></B>";
+    }
     @Override
     public void setColour(PlayerColour colour) {
         this.colour = Objects.requireNonNull(colour, "Colour cannot be set to null");
