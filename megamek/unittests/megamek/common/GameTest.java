@@ -97,4 +97,27 @@ public class GameTest {
         Assert.assertEquals(game.getTeamsVector().size(), 2);
         Assert.assertNull(game.getTeamForPlayer(game.getPlayer(2)));
     }
+
+    @Test
+    public void testGetAllWinningPlayers() {
+        IGame game = createGame(2);
+
+        // game without teams
+        game.setVictoryPlayerId(1);
+        List<IPlayer> winners = game.getAllWinningPlayers();
+        Assert.assertEquals(winners.size(), 1);
+        Assert.assertEquals(winners.get(0).getId(), 1);
+
+        // game with teams
+        game = createGame(4, 1,1,2,2);  // team1 : {player1, player2}, team2 : {player3, player4}
+        game.setVictoryTeamId(2);
+        winners = game.getAllWinningPlayers();
+        Assert.assertEquals(winners.size(), 2);
+        Assert.assertTrue(winners.contains(new Player(3, "tester3")));
+        Assert.assertTrue(winners.contains(new Player(4, "tester4")));
+
+        // no winners
+        game.cancelVictory();
+        Assert.assertEquals(game.getAllWinningPlayers().size(), 0);
+    }
 }
