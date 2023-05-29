@@ -1,7 +1,11 @@
 package megamek.server;
 
+import megamek.common.IPlayer;
+import megamek.common.Player;
+
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -40,11 +44,13 @@ public class RatingManager {
 
     /**
      * Adds the name of a new player and the default player rating to the playerRatings map.
-     * @param playerName the name of the new player
+     * @param player the new player
      */
-    public void addNewPlayer(String playerName) {
-        if (!playerRatings.containsKey(playerName)){
-            playerRatings.put(playerName, DEFAULT_PLAYER_RATING);
+    public void addNewPlayer(IPlayer player) {
+        String name = player.getName();
+        if (!playerRatings.containsKey(name)){
+            playerRatings.put(name, DEFAULT_PLAYER_RATING);
+            player.setRating(DEFAULT_PLAYER_RATING);
         }
     }
 
@@ -66,15 +72,31 @@ public class RatingManager {
      * This function updates the ratings of each player after victory has been established.
      * For now, it picks a random number between 8 and 12 and adds/subtracts it from the current rating.
      * This serves as a simple placeholder and may be replaced with a more complex ELO rating algorithm in the future.
-     * @param name The name of the player.
+     * @param player The player.
      * @param won Indicates whether the player won or lost the game.
      */
-    public void updatePlayerRating(String name, boolean won) {
+    public void updatePlayerRating(IPlayer player, boolean won) {
+        String name = player.getName();
         Integer currentRating = playerRatings.get(name);
         if (currentRating != null) {
             int ratingChange = new Random().nextInt(5) + 8;  // Random number in [8, 12]
             int newRating = won ? currentRating + ratingChange : Math.max(0, currentRating - ratingChange);
             playerRatings.put(name, newRating);
+            player.setRating(newRating);
+        }
+    }
+
+    /**
+     * Updates the rating of all winning and losing players.
+     * @param wonPlayers the winning players.
+     * @param lostPlayers the losing players.
+     */
+    public void updatePlayersRating(List<IPlayer> wonPlayers, List<IPlayer> lostPlayers) {
+        for (IPlayer player : wonPlayers){
+            updatePlayerRating(player, true);
+        }
+        for (IPlayer player : lostPlayers){
+            updatePlayerRating(player, false);
         }
     }
 
