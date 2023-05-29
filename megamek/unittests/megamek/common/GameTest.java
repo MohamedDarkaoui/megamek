@@ -111,6 +111,7 @@ public class GameTest {
         // game with teams
         game = createGame(4, 1,1,2,2);  // team1 : {player1, player2}, team2 : {player3, player4}
         game.setVictoryTeamId(2);
+        game.setVictoryPlayerId(1);
         winners = game.getAllWinningPlayers();
         Assert.assertEquals(winners.size(), 2);
         Assert.assertTrue(winners.contains(new Player(3, "tester3")));
@@ -119,5 +120,29 @@ public class GameTest {
         // no winners
         game.cancelVictory();
         Assert.assertEquals(game.getAllWinningPlayers().size(), 0);
+    }
+
+    @Test
+    public void testGetAllLosingPlayers(){
+        IGame game = createGame(4);
+
+        // no victory
+        Assert.assertTrue(game.getAllLosingPlayers().isEmpty());
+
+        // game without teams
+        game.setVictoryPlayerId(2);
+        List<IPlayer> losers =  game.getAllLosingPlayers();
+        Assert.assertEquals(3, losers.size());
+        Assert.assertTrue(losers.contains(new Player(1, "tester1")));
+        Assert.assertTrue(losers.contains(new Player(3, "tester2")));
+        Assert.assertTrue(losers.contains(new Player(4, "tester4")));
+
+        // game with teams
+        game = createGame(8, 1,1,1,1,2,2,3,3);
+        game.setVictoryTeamId(3);
+        losers = game.getAllLosingPlayers();
+        Assert.assertEquals(6, losers.size());
+        Assert.assertTrue(losers.contains(new Player(1, "tester1")));
+        Assert.assertFalse(losers.contains(new Player(7, "tester7")));
     }
 }
