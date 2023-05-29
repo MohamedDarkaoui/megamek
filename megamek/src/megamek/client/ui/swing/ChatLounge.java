@@ -3202,7 +3202,7 @@ public class ChatLounge extends AbstractPhaseDisplay implements ActionListener, 
                 }
                 return bv;
             } else if (col == COL_PLAYER) {
-                return player.getName();
+                return player.getName() + " [" + player.getRating() + "]";
             } else if (col == COL_START) {
                 return IStartingPositions.START_LOCATION_NAMES[player.getStartingPos()];
             } else if (col == COL_TON) {
