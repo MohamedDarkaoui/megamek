@@ -36,6 +36,8 @@ public final class Player extends TurnOrdered implements IPlayer {
 
     private int team = TEAM_NONE;
 
+    private int rating = -1;
+
     private boolean done = false; // done with phase
     private boolean ghost = false; // disconnected player
     private boolean observer = false;
@@ -227,6 +229,14 @@ public final class Player extends TurnOrdered implements IPlayer {
     @Override
     public void setTeam(int team) {
         this.team = team;
+    }
+    @Override
+    public int getRating() {
+        return rating;
+    }
+    @Override
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 
     @Override

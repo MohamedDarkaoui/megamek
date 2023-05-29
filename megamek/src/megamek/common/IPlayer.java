@@ -96,6 +96,10 @@ public interface IPlayer extends ITurnOrdered {
 
     void setTeam(int team);
 
+    int getRating();
+
+    void setRating(int rating);
+
     boolean isDone();
 
     void setDone(boolean done);
