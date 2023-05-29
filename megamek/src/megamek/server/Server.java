@@ -525,7 +525,7 @@ public class Server implements Runnable {
         }
 
         // load rating manager from storage
-        ratingManager = RatingManager.load();
+        ratingManager = RatingManager.load(RatingManager.FILENAME);
         if (ratingManager == null) {    // when an exception is caught, the loader returns null
             ratingManager = new RatingManager();
             // we don't want to lose the rankings, so we just let players play without updating their rank
@@ -3053,7 +3053,7 @@ public class Server implements Runnable {
     private void updateAndPersistRating(){
         if (game.getIsRanked()) {
             ratingManager.updatePlayersRating(game.getAllWinningPlayers(), game.getAllLosingPlayers());
-            ratingManager.save();
+            ratingManager.save(RatingManager.FILENAME);
         }
     }
 

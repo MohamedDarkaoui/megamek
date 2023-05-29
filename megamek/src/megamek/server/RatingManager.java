@@ -28,10 +28,10 @@ import javax.xml.bind.annotation.XmlTransient;
 public class RatingManager {
     private final Map<String, Integer> playerRatings; // stores the name (instead of connID) and the rating
     @XmlTransient
-    private final Integer DEFAULT_PLAYER_RATING = 300;
+    public static final Integer DEFAULT_PLAYER_RATING = 300;
 
     @XmlTransient
-    private static final String FILENAME = "mmconf/playerRatings.xml";
+    public static final String FILENAME = "mmconf/playerRatings.xml";
 
     public RatingManager() {
         playerRatings = new HashMap<>();
@@ -103,12 +103,12 @@ public class RatingManager {
     /**
      * Persists the current state of the RatingManager object to an XML file.
      */
-    public void save() {
+    public void save(String filename) {
         try {
             JAXBContext context = JAXBContext.newInstance(RatingManager.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.marshal(this, new File(FILENAME));
+            marshaller.marshal(this, new File(filename));
         } catch (JAXBException e) {
             e.printStackTrace();
         }
@@ -120,8 +120,8 @@ public class RatingManager {
      * If an error occurs during the unmarshalling process, it returns null.
      * @return The restored RatingManager object, a new RatingManager object or null
      */
-    public static RatingManager load() {
-        File file = new File(FILENAME);
+    public static RatingManager load(String filename) {
+        File file = new File(filename);
         if (!file.exists()){
             return new RatingManager();
         }
