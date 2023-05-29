@@ -2914,6 +2914,23 @@ public class Game implements Serializable, IGame {
     }
 
     /**
+     * Retrieves all teams that have not won when there is a winning team
+     * @return list of losing teams or empty list
+     */
+    public List<Team> getLosingTeams() {
+        List<Team> losingTeams = new ArrayList<>();
+        if (getVictoryTeam() == null || teams.isEmpty()){
+            return losingTeams;
+        }
+        for (Team team : teams){
+            if (team.getId() != victoryTeamId){
+                losingTeams.add(team);
+            }
+        }
+        return losingTeams;
+    }
+
+    /**
      * Fetches all players that have won
      * @return a list of players that have won
      */
@@ -2921,17 +2938,44 @@ public class Game implements Serializable, IGame {
         List<IPlayer> winners = new ArrayList<>();
         Team victoryTeam = getVictoryTeam();
 
+        // I'm not 100% sure that it's safe to assume that victoryPlayerId and victoryTeamId
+        // can't both be non-default at the same time, so we prioritize winning teams
+        if (victoryPlayerId != IPlayer.TEAM_NONE && victoryTeam != null){
+            winners.addAll(victoryTeam.getPlayersVector());
+            return winners;
+        }
+
         if (victoryPlayerId != IPlayer.PLAYER_NONE){
             winners.add(getPlayer(victoryPlayerId));
-            return winners;
         }
-
-        if (victoryTeam == null){
-            return winners;
-        }
-
-        winners.addAll(victoryTeam.getPlayersVector());
         return winners;
+    }
+
+    /**
+     * Retrieves all players that lost the game when the victory conditions have been meat
+     * @return a list that contains all losing players
+     */
+    public List<IPlayer> getAllLosingPlayers(){
+        List<IPlayer> losers = new ArrayList<>();
+        if (victoryPlayerId == IPlayer.PLAYER_NONE && victoryTeamId == IPlayer.TEAM_NONE){
+            return losers;
+        }
+
+        if (victoryTeamId != IPlayer.TEAM_NONE){
+            for (Team team : getLosingTeams()){
+                losers.addAll(team.getPlayersVector());
+            }
+        }
+
+        else {
+            for (IPlayer player : players){
+                if (player.getId() != victoryPlayerId){
+                    losers.add(player);
+                }
+            }
+        }
+
+        return losers;
     }
 
     /**

@@ -1325,6 +1325,17 @@ public interface IGame {
     abstract Team getVictoryTeam();
 
     /**
+     * Retrieves all teams that have not won when there is a winning team
+     * @return list of losing teams or empty list
+     */
+    abstract List<Team> getLosingTeams();
+
+    /**
+     * Retrieves all players that lost the game when the victory conditions have been meat
+     * @return a list that contains all losing players
+     */
+    abstract List<IPlayer> getAllLosingPlayers();
+    /**
      * Fetches all players that have won
      * @return a list of players that have won
      */
