@@ -1051,6 +1051,7 @@ public class Server implements Runnable {
         newPlayer.setTeam(Math.min(team, 5));
         game.addPlayer(connId, newPlayer);
         validatePlayerInfo(connId);
+        ratingManager.addNewPlayer(newPlayer);
         return newPlayer;
     }
 
@@ -3022,6 +3023,7 @@ public class Server implements Runnable {
                     processTeamChange();
                 }
                 if (victory()) {
+                    updateAndPersistRating();
                     changePhase(IGame.Phase.PHASE_VICTORY);
                 } else {
                     changePhase(IGame.Phase.PHASE_INITIATIVE);
@@ -3042,6 +3044,16 @@ public class Server implements Runnable {
             if (ent.getHiddenActivationPhase() == game.getPhase()) {
                 ent.setHiddeActivationPhase(null);
             }
+        }
+    }
+
+    /**
+     * Updates the rating of each player that has played in the current game and saves the object in xml format
+     */
+    private void updateAndPersistRating(){
+        if (game.getIsRanked()) {
+            ratingManager.updatePlayersRating(game.getAllWinningPlayers(), game.getAllLosingPlayers());
+            ratingManager.save();
         }
     }
 
