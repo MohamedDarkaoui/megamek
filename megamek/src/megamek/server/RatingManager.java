@@ -51,6 +51,8 @@ public class RatingManager {
         if (!playerRatings.containsKey(name)){
             playerRatings.put(name, DEFAULT_PLAYER_RATING);
             player.setRating(DEFAULT_PLAYER_RATING);
+        } else {
+            player.setRating(playerRatings.get(name));
         }
     }
 

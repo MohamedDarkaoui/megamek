@@ -1049,9 +1049,9 @@ public class Server implements Runnable {
         newPlayer.setCamoCategory(Camouflage.COLOUR_CAMOUFLAGE);
         newPlayer.setCamoFileName(colour.name());
         newPlayer.setTeam(Math.min(team, 5));
+        ratingManager.addNewPlayer(newPlayer);
         game.addPlayer(connId, newPlayer);
         validatePlayerInfo(connId);
-        ratingManager.addNewPlayer(newPlayer);
         return newPlayer;
     }
 
